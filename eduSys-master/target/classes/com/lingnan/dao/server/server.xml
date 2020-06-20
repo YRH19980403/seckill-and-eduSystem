@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lingnan.dao.server.serverDao">
+
+    <select id="findAll" resultType="Server">
+        SELECT * FROM tb_server
+    </select>
+
+    <insert id="newIP" parameterType="Server">
+        INSERT INTO tb_server(s_ip, s_ntime, s_otime, s_num)
+        VALUES (#{s_ip},#{s_ntime},#{s_otime},#{s_num})
+    </insert>
+
+
+
+</mapper>
