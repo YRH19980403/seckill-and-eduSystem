@@ -1,0 +1,246 @@
+/*
+ Navicat Premium Data Transfer
+
+ Source Server         : localhost_3306
+ Source Server Type    : MySQL
+ Source Server Version : 100138
+ Source Host           : localhost:3306
+ Source Schema         : db_edu
+
+ Target Server Type    : MySQL
+ Target Server Version : 100138
+ File Encoding         : 65001
+
+ Date: 20/06/2020 18:58:34
+*/
+
+SET NAMES utf8mb4;
+SET FOREIGN_KEY_CHECKS = 0;
+
+-- ----------------------------
+-- Table structure for tb_admin
+-- ----------------------------
+DROP TABLE IF EXISTS `tb_admin`;
+CREATE TABLE `tb_admin`  (
+  `a_id` int(20) NOT NULL AUTO_INCREMENT,
+  `a_name` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `a_pwd` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `a_phone` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `a_email` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `a_status` int(255) NULL DEFAULT 1,
+  `permissions` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  PRIMARY KEY (`a_id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+
+-- ----------------------------
+-- Records of tb_admin
+-- ----------------------------
+INSERT INTO `tb_admin` VALUES (1, '颜茹红', '123456', '19982463917', '1234567@qq.com', 1, '超级管理员');
+
+-- ----------------------------
+-- Table structure for tb_college
+-- ----------------------------
+DROP TABLE IF EXISTS `tb_college`;
+CREATE TABLE `tb_college`  (
+  `college_no` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `college_name` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `setting_quota` int(5) NULL DEFAULT NULL,
+  `current_quota` int(5) NULL DEFAULT NULL,
+  `major_int` int(5) NULL DEFAULT NULL,
+  `college_status` int(5) NULL DEFAULT 1,
+  PRIMARY KEY (`college_no`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+
+-- ----------------------------
+-- Records of tb_college
+-- ----------------------------
+INSERT INTO `tb_college` VALUES ('1', '信息学院', 700, 695, 5, 1);
+INSERT INTO `tb_college` VALUES ('2', '工程学院', 890, 890, 7, 1);
+
+-- ----------------------------
+-- Table structure for tb_course
+-- ----------------------------
+DROP TABLE IF EXISTS `tb_course`;
+CREATE TABLE `tb_course`  (
+  `course_no` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `major_no` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `course_name` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `credit` int(5) NULL DEFAULT NULL,
+  `planned_hour` int(5) NULL DEFAULT NULL,
+  `course_type` varchar(10) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `remarks` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  PRIMARY KEY (`course_no`) USING BTREE,
+  INDEX `major_no`(`major_no`) USING BTREE,
+  CONSTRAINT `tb_course_ibfk_1` FOREIGN KEY (`major_no`) REFERENCES `tb_major` (`major_no`) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+
+-- ----------------------------
+-- Records of tb_course
+-- ----------------------------
+INSERT INTO `tb_course` VALUES ('11', '1', 'java程序设计', 4, 36, '主修', '姚明');
+INSERT INTO `tb_course` VALUES ('22', '2', '软件工程', 5, 48, '主修', '朱林');
+INSERT INTO `tb_course` VALUES ('33', '3', '机械设计与制造', 4, 36, '专业课', '杨阳');
+INSERT INTO `tb_course` VALUES ('44', '1', '业务层架构与设计', 5, 36, '专业课', '龙');
+
+-- ----------------------------
+-- Table structure for tb_grade
+-- ----------------------------
+DROP TABLE IF EXISTS `tb_grade`;
+CREATE TABLE `tb_grade`  (
+  `grade_no` int(5) NOT NULL AUTO_INCREMENT,
+  `register_no` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `work_id` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `course_no` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `final_grade` int(5) NULL DEFAULT NULL,
+  `makeup_flag` int(5) NULL DEFAULT 1,
+  PRIMARY KEY (`grade_no`) USING BTREE,
+  INDEX `register_no`(`register_no`) USING BTREE,
+  INDEX `work_id`(`work_id`) USING BTREE,
+  INDEX `course_no`(`course_no`) USING BTREE,
+  CONSTRAINT `tb_grade_ibfk_1` FOREIGN KEY (`register_no`) REFERENCES `tb_student` (`register_no`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `tb_grade_ibfk_2` FOREIGN KEY (`work_id`) REFERENCES `tb_teacher` (`work_id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `tb_grade_ibfk_3` FOREIGN KEY (`course_no`) REFERENCES `tb_course` (`course_no`) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE = InnoDB AUTO_INCREMENT = 126 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+
+-- ----------------------------
+-- Records of tb_grade
+-- ----------------------------
+INSERT INTO `tb_grade` VALUES (123, '201731771433', '20114577', '11', 74, 0);
+INSERT INTO `tb_grade` VALUES (125, '1456', '20114577', '11', 56, 1);
+
+-- ----------------------------
+-- Table structure for tb_major
+-- ----------------------------
+DROP TABLE IF EXISTS `tb_major`;
+CREATE TABLE `tb_major`  (
+  `major_no` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `major_name` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `college_no` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `major_status` int(5) NULL DEFAULT 1,
+  PRIMARY KEY (`major_no`) USING BTREE,
+  INDEX `college_no`(`college_no`) USING BTREE,
+  CONSTRAINT `college_no` FOREIGN KEY (`college_no`) REFERENCES `tb_college` (`college_no`) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+
+-- ----------------------------
+-- Records of tb_major
+-- ----------------------------
+INSERT INTO `tb_major` VALUES ('1', '计算机科学与技术', '1', 1);
+INSERT INTO `tb_major` VALUES ('2', '软件工程', '1', 1);
+INSERT INTO `tb_major` VALUES ('3', '机械设计与制造', '2', 1);
+
+-- ----------------------------
+-- Table structure for tb_server
+-- ----------------------------
+DROP TABLE IF EXISTS `tb_server`;
+CREATE TABLE `tb_server`  (
+  `s_id` int(5) NOT NULL AUTO_INCREMENT,
+  `s_ip` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `s_ntime` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `s_num` int(5) NULL DEFAULT NULL,
+  PRIMARY KEY (`s_id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+
+-- ----------------------------
+-- Table structure for tb_student
+-- ----------------------------
+DROP TABLE IF EXISTS `tb_student`;
+CREATE TABLE `tb_student`  (
+  `register_no` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `major_no` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `s_name` varchar(10) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `s_img` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `s_gender` varchar(5) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `s_dateofbirth` varchar(25) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `s_class` int(5) NULL DEFAULT NULL,
+  `s_address` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `s_tele` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `s_email` varchar(25) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `graduation` varchar(5) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '1',
+  PRIMARY KEY (`register_no`) USING BTREE,
+  INDEX `major_no`(`major_no`) USING BTREE,
+  CONSTRAINT `tb_student_ibfk_1` FOREIGN KEY (`major_no`) REFERENCES `tb_major` (`major_no`) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+
+-- ----------------------------
+-- Records of tb_student
+-- ----------------------------
+INSERT INTO `tb_student` VALUES ('1456', '1', '小朱', NULL, '男', '2000-02-03', 2, '四川省', '555', '569@qq.com', '1');
+INSERT INTO `tb_student` VALUES ('1457', '2', '小娜', NULL, '女', '1999-03-02', 1, '北京市', '678', '123@qq.com', '1');
+INSERT INTO `tb_student` VALUES ('201731771433', '1', '小明', NULL, '男', '1998-08-08', 1, '四川省', '666', '66@qq.com', '1');
+INSERT INTO `tb_student` VALUES ('201731771434', '3', '小红', NULL, '女', '1999-09-09', 1, '湖南省', '777', '77@qq.com', '1');
+INSERT INTO `tb_student` VALUES ('201731771456', '1', '小颜', '9afd43da-15ce-4196-a172-119f0e809bca.jpg', '女', '1998-08-09', NULL, '四川省', '19982463917', '1758600770@qq.com', '0');
+INSERT INTO `tb_student` VALUES ('201731781437', '2', '小兰', '456e0651-40f8-4fdc-82f5-1ca284a08132.jpg', '女', '2000-08-09', NULL, '四川省', '13378904567', '146578@qq.com', '1');
+
+-- ----------------------------
+-- Table structure for tb_teach_course
+-- ----------------------------
+DROP TABLE IF EXISTS `tb_teach_course`;
+CREATE TABLE `tb_teach_course`  (
+  `tc_no` int(5) NOT NULL AUTO_INCREMENT,
+  `course_no` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `work_id` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `launch_year` varchar(25) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `launch_term` int(5) NULL DEFAULT NULL,
+  `executed_plan` varchar(10) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `audit` int(5) NULL DEFAULT 1,
+  PRIMARY KEY (`tc_no`) USING BTREE,
+  INDEX `course_no`(`course_no`) USING BTREE,
+  INDEX `work_id`(`work_id`) USING BTREE,
+  CONSTRAINT `tb_teach_course_ibfk_1` FOREIGN KEY (`course_no`) REFERENCES `tb_course` (`course_no`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `tb_teach_course_ibfk_2` FOREIGN KEY (`work_id`) REFERENCES `tb_teacher` (`work_id`) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE = InnoDB AUTO_INCREMENT = 334 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+
+-- ----------------------------
+-- Records of tb_teach_course
+-- ----------------------------
+INSERT INTO `tb_teach_course` VALUES (222, '11', '20114577', '2019-03-20', 3, '5周', 1);
+INSERT INTO `tb_teach_course` VALUES (333, '33', '20125699', '2019-05-06', 7, '5周', 1);
+
+-- ----------------------------
+-- Table structure for tb_teacher
+-- ----------------------------
+DROP TABLE IF EXISTS `tb_teacher`;
+CREATE TABLE `tb_teacher`  (
+  `work_id` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `t_name` varchar(10) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `t_img` varchar(55) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `t_gender` varchar(10) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `major_no` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `college_no` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `t_address` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `t_telephone` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `t_status` varchar(10) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '1',
+  `t_emaile` varchar(25) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  PRIMARY KEY (`work_id`) USING BTREE,
+  INDEX `major_no`(`major_no`) USING BTREE,
+  INDEX `college_no`(`college_no`) USING BTREE,
+  CONSTRAINT `tb_teacher_ibfk_1` FOREIGN KEY (`major_no`) REFERENCES `tb_major` (`major_no`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `tb_teacher_ibfk_2` FOREIGN KEY (`college_no`) REFERENCES `tb_college` (`college_no`) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+
+-- ----------------------------
+-- Records of tb_teacher
+-- ----------------------------
+INSERT INTO `tb_teacher` VALUES ('20114577', '姚明', NULL, '男', '1', '1', '四川省', '1234', '1', '12@qq.com');
+INSERT INTO `tb_teacher` VALUES ('20125699', '杨阳', NULL, '女', '3', '2', '湖北省', '1235', '1', '123@qq.com');
+INSERT INTO `tb_teacher` VALUES ('20135678', '朱林', NULL, '男', '2', '1', '贵州省', '1236', '1', '124@qq.com');
+
+-- ----------------------------
+-- Table structure for tb_text
+-- ----------------------------
+DROP TABLE IF EXISTS `tb_text`;
+CREATE TABLE `tb_text`  (
+  `text_id` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `text` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  PRIMARY KEY (`text_id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+
+-- ----------------------------
+-- Records of tb_text
+-- ----------------------------
+INSERT INTO `tb_text` VALUES ('1', '杨老师的课太**难了，搞不懂！！！');
+INSERT INTO `tb_text` VALUES ('2', 'Java老师太棒了');
+INSERT INTO `tb_text` VALUES ('3', '林老师mmp给我挂科');
+
+SET FOREIGN_KEY_CHECKS = 1;
